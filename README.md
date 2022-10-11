@@ -28,14 +28,14 @@ az network nsg create \
 # ------------------------------------------------------------------------------------------------
 az network nsg rule create \
 --direction Inbound \
---priority 100 \
---name AllowRdpInbound \
+--source-address-prefixes "*" \
 --source-port-ranges "*" \
+--destination-address-prefixes VirtualNetwork \
 --destination-port-ranges 3389 \
 --protocol "TCP" \
---source-address-prefixes "*" \
---destination-address-prefixes VirtualNetwork \
 --access Allow \
+--priority 100 \
+--name AllowRdpInbound \
 --nsg-name $nsg_n \
 --resource-group $rg
 
@@ -44,14 +44,14 @@ az network nsg rule create \
 # ------------------------------------------------------------------------------------------------
 az network nsg rule create \
 --direction Inbound \
---priority 200 \
---name AllowSshInbound \
+--source-address-prefixes "*" \
 --source-port-ranges "*" \
+--destination-address-prefixes VirtualNetwork \
 --destination-port-ranges 22 \
 --protocol "TCP" \
---source-address-prefixes "*" \
---destination-address-prefixes VirtualNetwork \
 --access Allow \
+--priority 200 \
+--name AllowSshInbound \
 --nsg-name $nsg_n \
 --resource-group $rg
 ```
