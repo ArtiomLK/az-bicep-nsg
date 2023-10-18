@@ -3,11 +3,16 @@
 ## CLI
 
 ```bash
-l="eastus2";                                  echo $l
-tags="env=dev app=nsg";                       echo $tags
-rg="rg-nsg-example";                          echo $rg
+l="eastus2";                                    echo $l
+env="prod";                                     echo $env
+project="bicephub";                             echo $env
+tags="env=$env project=$project";               echo $tags
+rg="rg-nsg-$project-$env-$l";                   echo $rg
 
-nsg_n="nsg-example";                          echo $nsg_n
+# Default NSG
+nsg_n="nsg-default-$project-$env-$l";           echo $nsg_n
+# AGW NSG
+# nsg_n="nsg-agw-$project-$env-$l";               echo $nsg_n
 
 
 # RG
@@ -54,6 +59,22 @@ az network nsg rule create \
 --name AllowSshInbound \
 --nsg-name $nsg_n \
 --resource-group $rg
+
+# -----------------------------------------------------------------------------------------------
+#  AGW V1
+# ------------------------------------------------------------------------------------------------
+# AllowGatewayManagerInbound
+az network nsg rule create \
+--name AllowGatewayManagerInbound \
+--direction Inbound \
+--resource-group $rg \
+--nsg-name $nsg_n \
+--priority 300 \
+--destination-port-ranges 65503-65534 \
+--protocol TCP \
+--source-address-prefixes GatewayManager \
+--destination-address-prefixes "*" \
+--access Allow
 
 # -----------------------------------------------------------------------------------------------
 #  AGW V2
