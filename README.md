@@ -3,20 +3,22 @@
 ## CLI
 
 ```bash
-l="eastus2";                                    echo $l
-env="prod";                                     echo $env
-project="bicephub";                             echo $env
-tags="env=$env project=$project";               echo $tags
-rg="rg-nsg-$project-$env-$l";                   echo $rg
+l="eastus2";                                                            echo $l
+env="prod";                                                             echo $env
+project="bicephub";                                                     echo $env
+tags="env=$env project=$project";                                       echo $tags
+rg="rg-nsg-$project-$env-$l";                                           echo $rg
+sub_id='########-####-####-####-############';                          echo $sub_id
 
 # Default NSG
-nsg_n="nsg-default-$project-$env-$l";           echo $nsg_n
+# nsg_n="nsg-default-$project-$env-$l";                                   echo $nsg_n
 # AGW NSG
-# nsg_n="nsg-agw-$project-$env-$l";               echo $nsg_n
+nsg_n="nsg-agw-$project-$env-$l";                                       echo $nsg_n
 
 
 # RG
 az group create \
+--subscription $sub_id \
 --name $rg \
 --location $l  \
 --tags $tags
@@ -24,6 +26,7 @@ az group create \
 # NSG
 az network nsg create \
 --name $nsg_n \
+--subscription $sub_id \
 --resource-group $rg \
 --location $l \
 --tags $tags
@@ -42,6 +45,7 @@ az network nsg rule create \
 --priority 100 \
 --name AllowRdpInbound \
 --nsg-name $nsg_n \
+--subscription $sub_id \
 --resource-group $rg
 
 # -----------------------------------------------------------------------------------------------
@@ -58,6 +62,7 @@ az network nsg rule create \
 --priority 200 \
 --name AllowSshInbound \
 --nsg-name $nsg_n \
+--subscription $sub_id \
 --resource-group $rg
 
 # -----------------------------------------------------------------------------------------------
@@ -65,45 +70,48 @@ az network nsg rule create \
 # ------------------------------------------------------------------------------------------------
 # AllowGatewayManagerInbound
 az network nsg rule create \
---name AllowGatewayManagerInbound \
 --direction Inbound \
---resource-group $rg \
---nsg-name $nsg_n \
 --priority 300 \
 --destination-port-ranges 65503-65534 \
 --protocol TCP \
 --source-address-prefixes GatewayManager \
 --destination-address-prefixes "*" \
---access Allow
+--access Allow \
+--name AllowGatewayManagerInbound \
+--nsg-name $nsg_n \
+--subscription $sub_id \
+--resource-group $rg
 
 # -----------------------------------------------------------------------------------------------
 #  AGW V2
 # ------------------------------------------------------------------------------------------------
 # AllowGatewayManagerInbound
 az network nsg rule create \
---name AllowGatewayManagerInbound \
 --direction Inbound \
---resource-group $rg \
---nsg-name $nsg_n \
---priority 300 \
+--priority 400 \
 --destination-port-ranges 65200-65535 \
 --protocol TCP \
 --source-address-prefixes GatewayManager \
 --destination-address-prefixes "*" \
---access Allow
+--access Allow \
+--name AllowGatewayManagerInbound \
+--nsg-name $nsg_n \
+--subscription $sub_id \
+--resource-group $rg
 
 # AllowAzureFrontDoor.BackendInbound
 az network nsg rule create \
---name AllowAzureFrontDoor.Backend \
 --direction Inbound \
---resource-group $rg \
---nsg-name $nsg_n \
---priority 200 \
+--priority 500 \
 --destination-port-ranges 443 80 \
 --protocol TCP \
 --source-address-prefixes AzureFrontDoor.Backend \
 --destination-address-prefixes VirtualNetwork \
---access Allow
+--access Allow \
+--name AllowAzureFrontDoor.Backend \
+--nsg-name $nsg_n \
+--subscription $sub_id \
+--resource-group $rg
 ```
 
 ## Additional Resources
