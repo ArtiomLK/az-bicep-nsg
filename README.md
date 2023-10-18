@@ -8,7 +8,7 @@ env="prod";                                                             echo $en
 project="bicephub";                                                     echo $env
 tags="env=$env project=$project";                                       echo $tags
 rg="rg-nsg-$project-$env-$l";                                           echo $rg
-sub_id='xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx';                          echo $sub_id
+sub_id='########-####-####-####-############';                          echo $sub_id
 
 # Default NSG
 # nsg_n="nsg-default-$project-$env-$l";                                   echo $nsg_n
