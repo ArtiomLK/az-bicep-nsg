@@ -102,7 +102,6 @@ az network nsg rule create \
 # -----------------------------------------------------------------------------------------------
 #  FD
 # -----------------------------------------------------------------------------------------------
-
 # AllowAzureFrontDoor.BackendInbound
 az network nsg rule create \
 --direction Inbound \
